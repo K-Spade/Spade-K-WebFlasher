@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="290" viewBox="0 0 380 290" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="170" y2="240" gradientUnits="userSpaceOnUse"><stop stop-color="#fff9ec"/><stop offset="1" stop-color="#ddd2ba"/></linearGradient>
+<linearGradient id="back" x1="0" y1="0" x2="170" y2="240"><stop stop-color="#2b2823"/><stop offset="1" stop-color="#111110"/></linearGradient>
+<pattern id="pattern" width="12" height="12" patternUnits="userSpaceOnUse"><path d="m6 0 6 6-6 6L0 6Z" stroke="#9b8452" stroke-width=".5" opacity=".35"/></pattern>
+<filter id="shadow" x="-100%" y="-50%" width="300%" height="250%"><feDropShadow dy="9" stdDeviation="10" flood-color="#000" flood-opacity=".55"/></filter>
+<g id="spade"><path d="M0-15C-4-9-14-5-14 2a8 8 0 0 0 14 5A8 8 0 0 0 14 2C14-5 4-9 0-15Zm0 18-7 13H7Z" fill="currentColor"/></g>
+<g id="king">
+<path d="M-51 0v-28l26-13H25l26 13V0Z" fill="#222320"/><path d="M-51-28-28-40 0-11 28-40 51-28M-40-32l12 32M40-32 28 0M0-11V0" stroke="#ae8c47" stroke-width="2"/>
+<path d="m-27-40 15-6h24l15 6L0-13Z" fill="#b69a5f"/><path d="m-14-38 14 14 14-14" stroke="#28251e" stroke-width="2"/>
+<path d="M-15-70c-2 5-3 12-1 19 1 6 8 12 16 12s15-6 16-12c2-7 1-14-1-19" fill="#e4d3af" stroke="#322b20" stroke-width="1.4"/>
+<path d="M-16-65q-3 14 3 21l8 4h10l8-4q6-7 3-21l-4 5v10l-12 7-12-7v-10Z" fill="#292a25"/><path d="m0-59-3 10h6M-10-60h6m8 0h6" stroke="#514633" stroke-width="1.3"/>
+<path d="M0-49q-6-6-13 1 9 2 13-1 4 3 13 1-7-7-13-1" fill="#292a25"/><path d="m-20-85 5 15h30l5-15-13 7-7-12-7 12Z" fill="#a5874c" stroke="#302619" stroke-width="1.4"/>
+<path d="M-15-70h30m-30-4h30" stroke="#302619" stroke-width="1.2"/><circle cx="0" cy="-79" r="2" fill="#8b302c"/>
+<path d="M-40 0v-65m-4 5h8m-4-17 3 12h-6Z" stroke="#ad8e51" stroke-width="2"/><path d="m22-25 9 7-9 8-9-8Z" fill="#8d3731" stroke="#c1a266"/><path d="m-23-18 4 4-4 4-4-4Z" fill="#c7ad76"/>
+</g></defs>
+<ellipse cx="207" cy="267" rx="133" ry="14" fill="#000" opacity=".15"/>
+<g transform="translate(68 34) rotate(-20 85 120)"><rect width="170" height="240" rx="12" fill="#151513" stroke="#716040"/><rect x="8" y="8" width="154" height="224" rx="7" fill="url(#pattern)" stroke="#6b5939" stroke-width=".6"/><use href="#spade" x="85" y="120" style="color:#9d8250"/></g>
+<g transform="translate(145 25) rotate(15 85 120)"><rect width="170" height="240" rx="12" fill="url(#back)" stroke="#ad9259"/><rect x="8" y="8" width="154" height="224" rx="7" fill="url(#pattern)" stroke="#7b6640" stroke-width=".7"/><path d="m85 54 43 66-43 66-43-66Z" stroke="#9e8048"/><use href="#spade" x="85" y="120" style="color:#c3a76e"/><text x="20" y="35" fill="#c3a76e" font-family="Georgia,serif" font-size="26">K</text></g>
+<g transform="translate(115 16) rotate(-4 85 120)" filter="url(#shadow)"><rect width="170" height="240" rx="11" fill="url(#paper)"/><rect x="5" y="5" width="160" height="230" rx="7" stroke="#b19a69" stroke-width=".7"/><rect x="30" y="24" width="110" height="192" rx="1" stroke="#a58b54" stroke-width="1"/><path d="M35 29h100v182H35Z" fill="#e8ddc6"/>
+<g transform="translate(85 120)"><use href="#king"/><use href="#king" transform="rotate(180)"/><path d="M-50 0H50" stroke="#c7ad76" stroke-width="2"/></g>
+<text x="11" y="30" fill="#22231f" font-family="Georgia,serif" font-size="25" font-weight="bold">K</text><use href="#spade" transform="translate(20 46) scale(.5)" style="color:#22231f"/>
+<g transform="rotate(180 85 120)"><text x="11" y="30" fill="#22231f" font-family="Georgia,serif" font-size="25" font-weight="bold">K</text><use href="#spade" transform="translate(20 46) scale(.5)" style="color:#22231f"/></g></g>
+<path d="M42 87v12m-6-6h12M319 177v10m-5-5h10" stroke="#a58c56" opacity=".6"/><circle cx="318" cy="61" r="2" fill="#b99a5c" opacity=".7"/><circle cx="59" cy="218" r="1.5" fill="#b99a5c" opacity=".6"/></svg>

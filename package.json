@@ -1,0 +1,9 @@
+{
+  "name": "spade-k-webflasher",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check assets/app.js && node --check assets/i18n.js && node --check assets/models.js && node --check assets/config.js && node --check assets/md5.js && node scripts/validate-catalog.mjs && node --test tests/*.test.mjs",
+    "build": "node scripts/build-site.mjs"
+  }
+}
