@@ -35,7 +35,7 @@
       "note": "Las revisiones 2.0 y 2.1 pueden diferir en periféricos. Elige la correcta.",
       "releases": [
         {
-          "version": "MK SIGNAL v1.8.1 · DIV V2.1",
+          "version": "MK SIGNAL v1.81 · DIV V2.1",
           "eraseAll": true,
           "parts": [
             {
@@ -60,7 +60,7 @@
           "eraseAll": true,
           "parts": [
             {
-              "path": "firmware/ESP32_DIV_V2/ESP32-DIV-1.7.2-stable-by_MK_SIGNAL-DIV-V2-full.bin",
+              "path": "firmware/ESP32_DIV_2.0/ESP32-DIV-1.7.2-stable-by_MK_SIGNAL-DIV-V2-full.bin",
               "offset": "0x0",
               "sha256": "1a30ef2acc6dbf9a2ea4e98dac821e0343b5939406ae6ca3470146f17574d36d"
             }
@@ -126,6 +126,27 @@
               "path": "firmware/MARAUDER_MINI_V3/ESP32Marauder_MK_SIGNAL_v2_for_Mini_V3-4b59659_factory.bin",
               "offset": "0x0",
               "sha256": "a137b2bc17b4711c93099cbc6d86f5d123f49e8e23eb080d43e378669838a563"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "NRF24_JAMMER",
+      "name": "NRF24_JAMMER",
+      "chip": "ESP32",
+      "visual": "board",
+      "description": "NRF24_JAMMER con placa ESP32 DEV.",
+      "note": "Comprueba que la placa sea ESP32 DEV y que la revisión coincida con el firmware.",
+      "releases": [
+        {
+          "version": "NRF-Jammer V1.0",
+          "eraseAll": true,
+          "parts": [
+            {
+              "path": "firmware/NRF24_JAMMER/NRF-JammerV1.0-FULL.bin",
+              "offset": "0x0",
+              "sha256": "8725836a6e8068fce2f564f1c671d1eb2463492e819205078ff5854831056329"
             }
           ]
         }

@@ -67,6 +67,14 @@ function screw(parent,x,y,z) {
   faceDisc(parent,.049,.009,x,y,z+.011,materials.screw);
   box(parent,.045,.009,.003,x,y,z+.018,materials.recess);
 }
+function esp32Dev(parent) {
+  plate(parent,1.45,2.65,.14);
+  roundedBox(parent,.9,1.18,.07,0,.28,.13,materials.metal,.04);
+  label(parent,'ESP32 DEV',1.08,.22,0,-.55,.14);
+  label(parent,'NRF24_JAMMER',1.22,.16,0,-.86,.14);
+  for(const x of [-.62,.62])for(let i=0;i<15;i++)box(parent,.09,.065,.13,x,-1.03+i*.146,.16,materials.gold);
+  port(parent,-1.325);
+}
 function plate(parent,w,h,caseDepth=.18,cased=false) {
   const body=roundedBox(parent,w,h,caseDepth,0,0,0,cased?materials.black:materials.pcb,.09);
   roundedBox(parent,w-.08,h-.08,.015,0,0,caseDepth/2+.012,cased?materials.face:materials.pcb,.07);
@@ -191,6 +199,7 @@ export function createViewer(stage,host) {
     else if(id==='ESP32_DIV_V2.1')div(model,true);
     else if(id==='ESP32_DIV_2.0')div(model,false);
     else if(id==='NRFBOX_V3')nrf(model);
+    else if(id==='NRF24_JAMMER')esp32Dev(model);
     else if(id==='MARAUDER_V8')marauder(model,false);
     else marauder(model,true);
     rx=-.16;ry=-.32;
