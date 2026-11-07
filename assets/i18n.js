@@ -42,9 +42,13 @@ translations.es.devices.NRF24_JAMMER = ['NRF24_JAMMER con placa ESP32 DEV.', 'Co
 translations.en.devices.NRF24_JAMMER = ['NRF24_JAMMER with an ESP32 DEV board.', 'Check that the board is ESP32 DEV and that the revision matches the firmware.'];
 translations['zh-Hant'].devices.NRF24_JAMMER = ['採用 ESP32 DEV 開發板的 NRF24_JAMMER。', '請確認開發板為 ESP32 DEV，且硬體版本與韌體相符。'];
 
-Object.assign(translations.es, {baudHint:'9600–921600 baud · configurar antes de conectar',baudInvalid:'Introduce un entero entre 9600 y 921600 baud.'});
-Object.assign(translations.en, {baudHint:'9600–921600 baud · set before connecting',baudInvalid:'Enter a whole number between 9600 and 921600 baud.'});
-Object.assign(translations['zh-Hant'], {baudHint:'9600–921600 baud · 請在連線前設定',baudInvalid:'請輸入 9600 至 921600 之間的整數波特率。'});
+Object.assign(translations.es, {baudHint:'Hasta 921600 baud · ajustar antes de flashear',baudInvalid:'Introduce un entero entre 9600 y 921600 baud.'});
+Object.assign(translations.en, {baudHint:'Up to 921600 baud · change before flashing',baudInvalid:'Enter a whole number between 9600 and 921600 baud.'});
+Object.assign(translations['zh-Hant'], {baudHint:'最高 921600 baud · 可於連線後、燒錄前選擇',baudInvalid:'請輸入 9600 至 921600 之間的整數波特率。'});
+
+Object.assign(translations.es,{baudReconnecting:'Reconectando a {baud} baud…',baudApplied:'Velocidad de escritura: {baud} baud.'});
+Object.assign(translations.en,{baudReconnecting:'Reconnecting at {baud} baud…',baudApplied:'Writing speed: {baud} baud.'});
+Object.assign(translations['zh-Hant'],{baudReconnecting:'正在以 {baud} baud 重新連線…',baudApplied:'寫入速度：{baud} baud。'});
 
 let language = 'es';
 export const languages = Object.keys(translations);

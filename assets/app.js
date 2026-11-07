@@ -42,8 +42,8 @@ function selectedBaudRate(){
 }
 function updateControls(){
   const connected=Boolean(state.loader),available=Boolean(release()),confirmed=$('confirmFlash').checked;
-  $('connectButton').disabled=state.busy||!serialReady()||!state.device||(!connected&&!$('baudRate').checkValidity());$('flashButton').disabled=state.busy||!connected||!available||!confirmed;
-  $('flashButtonLabel').textContent=t(state.busy?'processing':'startFlash');$('downloadButton').disabled=state.busy||!available;$('baudRate').disabled=state.busy||connected;
+  $('connectButton').disabled=state.busy||!serialReady()||!state.device||(!connected&&!$('baudRate').checkValidity());$('flashButton').disabled=state.busy||!connected||!available||!confirmed||!$('baudRate').checkValidity();
+  $('flashButtonLabel').textContent=t(state.busy?'processing':'startFlash');$('downloadButton').disabled=state.busy||!available;$('baudRate').disabled=state.busy;
   for(const id of ['releaseSelect','confirmFlash','search'])$(id).disabled=state.busy;
   for(const button of document.querySelectorAll('.device-card,.filters button'))button.disabled=state.busy||connected;
   mark('readyDevice',connected);mark('readyFirmware',available);mark('readyConfirm',confirmed);
@@ -86,17 +86,29 @@ async function disconnect(){
   if(state.port?.readable&&!state.port.readable.locked&&!state.port.writable?.locked)try{await state.port.close();}catch{}
   state.port=null;state.portLabel=null;updateControls();
 }
+async function openLoader(baudrate){
+  const {ESPLoader,Transport}=await import('./vendor/esptool/bundle.js');
+  state.transport=new Transport(state.port,true);
+  const loader=new ESPLoader({transport:state.transport,baudrate,romBaudrate:115200,debugLogging:false,terminal:{clean:()=>{},writeLine:line=>log(line),write:line=>log(line)}});
+  const detected=await loader.main(),chip=loader.chip?.CHIP_NAME||detected;
+  if(String(chip).toUpperCase()!==state.device.chip.toUpperCase())throw new Error(t('chipMismatch',{actual:chip,device:state.device.name,expected:state.device.chip}));
+  state.loader=loader;state.chip=chip;state.connectionMessage=t('connectedLog',{chip});
+}
+async function applyBaudRate(baudrate){
+  if(state.transport.baudrate===baudrate)return;
+  log(t('baudReconnecting',{baud:baudrate}));
+  const previous=state.transport;state.loader=null;
+  await previous.disconnect();
+  await openLoader(baudrate);
+  log(t('baudApplied',{baud:state.transport.baudrate}));
+}
 async function connect(){
   if(state.loader){state.busy=true;updateControls();await disconnect();state.busy=false;state.connectionMessage=null;updateControls();return;}
   if(!state.device||!serialReady())return;state.busy=true;state.connectionMessage=null;updateControls();
   try{
     const baudrate=selectedBaudRate();
     state.port=await navigator.serial.requestPort();const info=state.port.getInfo();state.portLabel=info.usbVendorId?t('portVid',{vid:info.usbVendorId.toString(16).padStart(4,'0'),pid:(info.usbProductId||0).toString(16).padStart(4,'0')}):t('portAuthorized');updateControls();
-    const {ESPLoader,Transport}=await import('./vendor/esptool/bundle.js');state.transport=new Transport(state.port,true);
-    const loader=new ESPLoader({transport:state.transport,baudrate,romBaudrate:115200,debugLogging:false,terminal:{clean:()=>{},writeLine:line=>log(line),write:line=>log(line)}});
-    const detected=await loader.main(),chip=loader.chip?.CHIP_NAME||detected;
-    if(String(chip).toUpperCase()!==state.device.chip.toUpperCase())throw new Error(t('chipMismatch',{actual:chip,device:state.device.name,expected:state.device.chip}));
-    state.loader=loader;state.chip=chip;state.connectionMessage=t('connectedLog',{chip});setProgress(0,release()?'progressConnected':'progressNoFirmware');
+    await openLoader(baudrate);setProgress(0,release()?'progressConnected':'progressNoFirmware');
   }catch(error){showError(error);await disconnect();}finally{state.busy=false;updateControls();}
 }
 async function fetchPart(part,signal){
@@ -114,9 +126,11 @@ async function flash(){
   if($('flashButton').disabled)return;$('flashTerminal').hidden=false;$('log').replaceChildren();state.busy=true;updateControls();
   const abort=new AbortController(),timer=setTimeout(()=>abort.abort(new Error('Download timeout')),120000);
   try{
+    const baudrate=selectedBaudRate();
     const selected=release();if(!selected)throw new Error(t('noRelease'));log(t('flashStart',{device:state.device.name,version:selected.version}));setProgress(0,'progressDownload');
     const parts=[];for(const part of selected.parts)parts.push({bytes:await fetchPart(part,abort.signal),address:offsetNumber(part.offset)});
     checkRanges(parts);if(selected.eraseAll&&parts.length===1&&parts[0].address===0)checkMergedFactoryImage(parts[0].bytes,state.device.chip);
+    await applyBaudRate(baudrate);
     const total=parts.reduce((sum,p)=>sum+p.bytes.length,0),sizes=parts.map(p=>p.bytes.length);log(t('writingLog',{count:parts.length,kb:(total/1024).toFixed(1)}));
     if(selected.eraseAll){setProgress(0,'progressErasing');log(t('erasingLog'),'warn');}
     await state.loader.writeFlash({fileArray:parts.map(p=>({data:p.bytes,address:p.address})),flashSize:'keep',flashMode:'keep',flashFreq:'keep',eraseAll:selected.eraseAll===true,compress:true,
@@ -134,7 +148,7 @@ function refreshLanguage(){
   renderDevices();setProgress(Number($('progressPercent').textContent.replace('%','')),state.progressKey,state.progressValues);updateControls();
 }
 
-$('baudRate').addEventListener('input',()=>{try{selectedBaudRate();}catch{}updateControls();});
+$('baudRate').addEventListener('change',()=>{try{selectedBaudRate();}catch{}updateControls();});
 $('connectButton').addEventListener('click',connect);$('flashButton').addEventListener('click',flash);$('downloadButton').addEventListener('click',download);
 $('releaseSelect').addEventListener('change',renderRelease);$('confirmFlash').addEventListener('change',updateControls);$('search').addEventListener('input',renderDevices);$('languageSelect').addEventListener('change',refreshLanguage);
 document.querySelectorAll('.filters button').forEach(button=>button.addEventListener('click',()=>{if(state.busy||state.loader)return;state.family=button.dataset.family;document.querySelectorAll('.filters button').forEach(other=>other.classList.toggle('active',other===button));renderDevices();}));
