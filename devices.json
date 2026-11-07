@@ -146,7 +146,7 @@
             {
               "path": "firmware/NRF24_JAMMER/NRF-JammerV1.0-FULL.bin",
               "offset": "0x0",
-              "sha256": "8725836a6e8068fce2f564f1c671d1eb2463492e819205078ff5854831056329"
+              "sha256": "32dd802596f8502189e554a7da2afaa69fc84322eff5f837f2320f83d3f06859"
             }
           ]
         }

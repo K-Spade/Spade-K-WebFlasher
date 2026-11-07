@@ -1,6 +1,13 @@
 export const MAX_FIRMWARE_BYTES = 32 * 1024 * 1024;
 export const CHIPS = ['ESP32', 'ESP32-S2', 'ESP32-S3', 'ESP32-C2', 'ESP32-C3', 'ESP32-C5', 'ESP32-C6', 'ESP32-H2'];
 
+export function baudRateNumber(value) {
+  if (typeof value !== 'number' && (typeof value !== 'string' || !/^\d+$/.test(value.trim()))) throw new Error('Invalid baud rate');
+  const rate = Number(value);
+  if (!Number.isSafeInteger(rate) || rate < 9600 || rate > 921600) throw new Error('Invalid baud rate');
+  return rate;
+}
+
 export function offsetNumber(value) {
   const n = typeof value === 'number' ? value : /^(0x[\da-f]+|\d+)$/i.test(String(value).trim()) ? Number(value) : NaN;
   if (!Number.isSafeInteger(n) || n < 0 || n >= MAX_FIRMWARE_BYTES || n % 4096) {

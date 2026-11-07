@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateConfig, checkRanges, checkMergedFactoryImage} from '../assets/config.js';
+import {validateConfig, checkRanges, checkMergedFactoryImage, baudRateNumber} from '../assets/config.js';
 import {md5} from '../assets/md5.js';
 
 const base = () => ({schemaVersion:2, devices:[{id:'BOARD_V1',name:'Board V1',chip:'ESP32',visual:'board',releases:[]}]});
@@ -41,4 +41,9 @@ test('factory image must include bootloader, matching app, and partition table',
   image[0x10000 + 12] = 23;
   image[0x8000] = 0xff;
   assert.throws(() => checkMergedFactoryImage(image, 'ESP32-C5'), /particiones/);
+});
+
+test('custom baud rate accepts supported bounds and rejects invalid values', () => {
+  for (const rate of [9600, 115200, 230400, 460800, 921600, 250000]) assert.equal(baudRateNumber(String(rate)), rate);
+  for (const rate of ['', ' ', 'abc', '1e5', '0x10000', 9599, 921601, -1, 115200.5, Infinity, null, true]) assert.throws(() => baudRateNumber(rate), /Invalid baud rate/);
 });

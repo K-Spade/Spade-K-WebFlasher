@@ -67,13 +67,85 @@ function screw(parent,x,y,z) {
   faceDisc(parent,.049,.009,x,y,z+.011,materials.screw);
   box(parent,.045,.009,.003,x,y,z+.018,materials.recess);
 }
-function esp32Dev(parent) {
-  plate(parent,1.45,2.65,.14);
-  roundedBox(parent,.9,1.18,.07,0,.28,.13,materials.metal,.04);
-  label(parent,'ESP32 DEV',1.08,.22,0,-.55,.14);
-  label(parent,'NRF24_JAMMER',1.22,.16,0,-.86,.14);
-  for(const x of [-.62,.62])for(let i=0;i<15;i++)box(parent,.09,.065,.13,x,-1.03+i*.146,.16,materials.gold);
-  port(parent,-1.325);
+// Visual interpretation of the owner's reference photo; not a wiring diagram.
+function nrf24Jammer(g) {
+  const baseZ=.08;
+  roundedBox(g,3.42,2.55,.14,0,-.03,0,materials.black,.18);
+  roundedBox(g,3.34,2.47,.012,0,-.03,baseZ,materials.pcb,.14);
+  for(const x of [-1.55,1.55])for(const y of [-1.14,1.08])screw(g,x,y,.09);
+
+  // Central ESP32 DEV board, metal RF shield, USB socket and two buttons.
+  roundedBox(g,1.11,2.18,.09,0,.04,.15,materials.edge,.045);
+  roundedBox(g,1.04,2.11,.014,0,.04,.203,materials.pcb,.025);
+  roundedBox(g,.78,.83,.075,0,.59,.255,materials.metal,.025);
+  label(g,'ESP32',.64,.19,0,.64,.299);
+  label(g,'DEV',.44,.11,0,.43,.299);
+  box(g,.36,.31,.055,0,-.56,.249,materials.black);
+  for(const x of [-.46,.46])for(let i=0;i<18;i++) {
+    const y=-.91+i*.111;
+    faceDisc(g,.035,.024,x,y,.23,materials.metal,12);
+    faceDisc(g,.016,.026,x,y,.245,materials.recess,10);
+  }
+  for(let i=0;i<5;i++) {
+    box(g,.064,.13,.026,-.3+i*.15,-.18,.236,materials.metal);
+    box(g,.044,.095,.029,-.3+i*.15,-.18,.257,materials.face);
+  }
+  for(const x of [-.23,.23])for(let i=0;i<6;i++)box(g,.043,.025,.021,x,-.7+i*.048,.25,materials.metal);
+  button(g,-.34,-.9,.235,.055);button(g,.34,-.9,.235,.055);
+  label(g,'EN',.16,.065,-.34,-.76,.25);label(g,'BOOT',.22,.065,.34,-.76,.25);
+  roundedBox(g,.4,.31,.14,0,-1.01,.28,materials.metal,.025);
+  roundedBox(g,.29,.2,.012,0,-1,.356,materials.edge,.02);
+  box(g,.1,.09,.012,0,-.98,.366,materials.black);
+  const usb=new THREE.Group();usb.position.set(0,.02,.28);g.add(usb);port(usb,-1.11);
+
+  // Two narrow radio daughterboards, matching the photo's symmetric layout.
+  for(const x of [-1.12,1.12]) {
+    roundedBox(g,.69,1.81,.075,x,.19,.15,materials.edge,.026);
+    roundedBox(g,.64,1.76,.01,x,.19,.194,materials.pcb,.015);
+    box(g,.25,.25,.032,x,.1,.224,materials.black);
+    box(g,.22,.2,.032,x,-.4,.224,materials.black);
+    for(let i=0;i<5;i++)for(const side of [-1,1]) {
+      box(g,.037,.023,.014,x+side*.147,.012+i*.043,.23,materials.metal);
+      box(g,.032,.022,.014,x+side*.131,-.476+i*.035,.23,materials.metal);
+    }
+    for(let i=0;i<7;i++) {
+      const cx=x+(i%2?-.23:.23), cy=.63-i*.172;
+      box(g,.09,.047,.019,cx,cy,.215,materials.metal);
+      box(g,.048,.037,.022,cx,cy,.228,materials.face);
+    }
+    box(g,.12,.18,.025,x+.21,-.43,.22,materials.metal);
+    for(const dx of [-.2,0,.2])for(const y of [-.57,-.69])faceDisc(g,.035,.025,x+dx,y,.219,materials.metal,12);
+    for(const dx of [-.26,.26])faceDisc(g,.036,.019,x+dx,.99,.21,materials.metal,12);
+    label(g,'NRF24',.45,.09,x,-.48,.247);
+  }
+
+  // Three bare gold SMA connectors: no invented rubber antennas or display.
+  for(const x of [-1.12,0,1.12]) {
+    const connectorZ=x===0?.13:.25;
+    box(g,.28,.22,.09,x,1.015,connectorZ,materials.gold);
+    cylinder(g,.112,.112,.19,x,1.14,connectorZ,materials.gold);
+    const nut=new THREE.Mesh(new THREE.CylinderGeometry(.15,.15,.105,6),materials.gold);
+    nut.position.set(x,1.205,connectorZ);g.add(nut);
+    cylinder(g,.1,.1,.32,x,1.39,connectorZ,materials.gold);
+    for(let j=0;j<7;j++)cylinder(g,.111,.111,.016,x,1.255+j*.041,connectorZ,materials.gold);
+    cylinder(g,.069,.069,.008,x,1.555,connectorZ,materials.recess);
+    cylinder(g,.022,.022,.012,x,1.561,connectorZ,materials.gold);
+  }
+
+  // Bottom edge has two rows of exposed header pins.
+  for(const cx of [-.88,.88]) {
+    box(g,.88,.12,.1,cx,-1.13,.145,materials.black);
+    for(let i=0;i<8;i++) {
+      const x=cx-.3675+i*.105;
+      faceDisc(g,.029,.017,x,-1.13,.211,materials.metal,10);
+      box(g,.026,.46,.026,x,-1.4,.11,materials.metal);
+    }
+  }
+  for(const x of [-1.52,1.52]) {
+    const textGroup=new THREE.Group();textGroup.position.set(x,0,.1);textGroup.rotation.z=x<0?Math.PI/2:-Math.PI/2;g.add(textGroup);
+    label(textGroup,'NRF24 JAMMER',1.62,.18,0,0,.01);
+  }
+  label(g,'SPADE K',.58,.09,0,-1.2,.09);
 }
 function plate(parent,w,h,caseDepth=.18,cased=false) {
   const body=roundedBox(parent,w,h,caseDepth,0,0,0,cased?materials.black:materials.pcb,.09);
@@ -199,9 +271,10 @@ export function createViewer(stage,host) {
     else if(id==='ESP32_DIV_V2.1')div(model,true);
     else if(id==='ESP32_DIV_2.0')div(model,false);
     else if(id==='NRFBOX_V3')nrf(model);
-    else if(id==='NRF24_JAMMER')esp32Dev(model);
+    else if(id==='NRF24_JAMMER')nrf24Jammer(model);
     else if(id==='MARAUDER_V8')marauder(model,false);
-    else marauder(model,true);
+    else if(id==='MARAUDER_MINI_V3')marauder(model,true);
+    else {plate(model,1.45,2.65,.14);label(model,'SPADE K',1,.22,0,0,.11);}
     rx=-.16;ry=-.32;
     if(matchMedia('(prefers-reduced-motion: reduce)').matches){model.scale.setScalar(1);render();return;}
     const started=performance.now();

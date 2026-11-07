@@ -42,6 +42,10 @@ translations.es.devices.NRF24_JAMMER = ['NRF24_JAMMER con placa ESP32 DEV.', 'Co
 translations.en.devices.NRF24_JAMMER = ['NRF24_JAMMER with an ESP32 DEV board.', 'Check that the board is ESP32 DEV and that the revision matches the firmware.'];
 translations['zh-Hant'].devices.NRF24_JAMMER = ['採用 ESP32 DEV 開發板的 NRF24_JAMMER。', '請確認開發板為 ESP32 DEV，且硬體版本與韌體相符。'];
 
+Object.assign(translations.es, {baudHint:'9600–921600 baud · configurar antes de conectar',baudInvalid:'Introduce un entero entre 9600 y 921600 baud.'});
+Object.assign(translations.en, {baudHint:'9600–921600 baud · set before connecting',baudInvalid:'Enter a whole number between 9600 and 921600 baud.'});
+Object.assign(translations['zh-Hant'], {baudHint:'9600–921600 baud · 請在連線前設定',baudInvalid:'請輸入 9600 至 921600 之間的整數波特率。'});
+
 let language = 'es';
 export const languages = Object.keys(translations);
 export const dictionaries = translations;

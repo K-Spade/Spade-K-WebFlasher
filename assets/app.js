@@ -1,4 +1,4 @@
-import {loadConfig,offsetNumber,checkRanges,checkMergedFactoryImage,MAX_FIRMWARE_BYTES} from './config.js';
+import {loadConfig,baudRateNumber,offsetNumber,checkRanges,checkMergedFactoryImage,MAX_FIRMWARE_BYTES} from './config.js';
 import {md5} from './md5.js';
 import {t,setLanguage,currentLanguage,deviceText} from './i18n.js';
 import {createViewer} from './models.js';
@@ -36,9 +36,13 @@ function renderConnection(){
   $('connectionHint').textContent=state.connectionMessage||t('connectHint');$('portInfo').textContent=state.portLabel||t('portPrivacy');
   mark('checkBrowser',supported);mark('checkUsb',Boolean(state.port));mark('checkChip',connected);
 }
+function selectedBaudRate(){
+  try {const rate=baudRateNumber($('baudRate').value);$('baudRate').setCustomValidity('');return rate;}
+  catch {$('baudRate').setCustomValidity(t('baudInvalid'));throw new Error(t('baudInvalid'));}
+}
 function updateControls(){
   const connected=Boolean(state.loader),available=Boolean(release()),confirmed=$('confirmFlash').checked;
-  $('connectButton').disabled=state.busy||!serialReady()||!state.device;$('flashButton').disabled=state.busy||!connected||!available||!confirmed;
+  $('connectButton').disabled=state.busy||!serialReady()||!state.device||(!connected&&!$('baudRate').checkValidity());$('flashButton').disabled=state.busy||!connected||!available||!confirmed;
   $('flashButtonLabel').textContent=t(state.busy?'processing':'startFlash');$('downloadButton').disabled=state.busy||!available;$('baudRate').disabled=state.busy||connected;
   for(const id of ['releaseSelect','confirmFlash','search'])$(id).disabled=state.busy;
   for(const button of document.querySelectorAll('.device-card,.filters button'))button.disabled=state.busy||connected;
@@ -86,9 +90,10 @@ async function connect(){
   if(state.loader){state.busy=true;updateControls();await disconnect();state.busy=false;state.connectionMessage=null;updateControls();return;}
   if(!state.device||!serialReady())return;state.busy=true;state.connectionMessage=null;updateControls();
   try{
+    const baudrate=selectedBaudRate();
     state.port=await navigator.serial.requestPort();const info=state.port.getInfo();state.portLabel=info.usbVendorId?t('portVid',{vid:info.usbVendorId.toString(16).padStart(4,'0'),pid:(info.usbProductId||0).toString(16).padStart(4,'0')}):t('portAuthorized');updateControls();
     const {ESPLoader,Transport}=await import('./vendor/esptool/bundle.js');state.transport=new Transport(state.port,true);
-    const loader=new ESPLoader({transport:state.transport,baudrate:Number($('baudRate').value),romBaudrate:115200,debugLogging:false,terminal:{clean:()=>{},writeLine:line=>log(line),write:line=>log(line)}});
+    const loader=new ESPLoader({transport:state.transport,baudrate,romBaudrate:115200,debugLogging:false,terminal:{clean:()=>{},writeLine:line=>log(line),write:line=>log(line)}});
     const detected=await loader.main(),chip=loader.chip?.CHIP_NAME||detected;
     if(String(chip).toUpperCase()!==state.device.chip.toUpperCase())throw new Error(t('chipMismatch',{actual:chip,device:state.device.name,expected:state.device.chip}));
     state.loader=loader;state.chip=chip;state.connectionMessage=t('connectedLog',{chip});setProgress(0,release()?'progressConnected':'progressNoFirmware');
@@ -122,12 +127,14 @@ async function flash(){
 function saveFile(name,content,type='application/octet-stream'){const url=URL.createObjectURL(new Blob([content],{type}));const link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 async function download(){const selected=release();if(!selected)return;state.busy=true;updateControls();const abort=new AbortController(),timer=setTimeout(()=>abort.abort(),120000);try{for(const part of selected.parts)saveFile(part.path.split('/').pop(),await fetchPart(part,abort.signal));toast(t('downloaded'));}catch(error){showError(error);}finally{clearTimeout(timer);state.busy=false;updateControls();}}
 function refreshLanguage(){
+  try{selectedBaudRate();}catch{}
   const confirmed=$('confirmFlash').checked;setLanguage($('languageSelect').value);
   if(state.device){$('selectedName').textContent=state.device.name;$('selectedFamily').textContent=`${state.device.chip} / ${t('hardware')}`;$('selectedDescription').textContent=deviceText(state.device.id,0);$('deviceNotice').textContent=deviceText(state.device.id,1);if(!releases().length)$('releaseSelect').options[0].text=t('noFirmware');renderRelease();$('confirmFlash').checked=confirmed;}
   if(state.loader)state.connectionMessage=t('connectedLog',{chip:state.chip});else state.connectionMessage=null;
   renderDevices();setProgress(Number($('progressPercent').textContent.replace('%','')),state.progressKey,state.progressValues);updateControls();
 }
 
+$('baudRate').addEventListener('input',()=>{try{selectedBaudRate();}catch{}updateControls();});
 $('connectButton').addEventListener('click',connect);$('flashButton').addEventListener('click',flash);$('downloadButton').addEventListener('click',download);
 $('releaseSelect').addEventListener('change',renderRelease);$('confirmFlash').addEventListener('change',updateControls);$('search').addEventListener('input',renderDevices);$('languageSelect').addEventListener('change',refreshLanguage);
 document.querySelectorAll('.filters button').forEach(button=>button.addEventListener('click',()=>{if(state.busy||state.loader)return;state.family=button.dataset.family;document.querySelectorAll('.filters button').forEach(other=>other.classList.toggle('active',other===button));renderDevices();}));
