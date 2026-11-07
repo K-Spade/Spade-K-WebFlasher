@@ -1,12 +1,135 @@
 {
   "schemaVersion": 2,
-  "site": {"name": "Spade K WebFlasher", "description": "Firmware de tus dispositivos, directo desde este repositorio."},
+  "site": {
+    "name": "Spade K WebFlasher",
+    "description": "Firmware de tus dispositivos, directo desde este repositorio."
+  },
   "devices": [
-    {"id":"RF-CLOWN_V2","name":"RF-CLOWN V2","chip":"ESP32","visual":"board","description":"Placa de radio con pantalla y antenas externas.","note":"Comprueba que la revisión de la PCB coincide con el firmware.","releases":[{"version":"MK SIGNAL V2.2 Stable","eraseAll":true,"parts":[{"path":"firmware/RF-CLOWN_V2/MK_SIGNAL_RF_CLOWN_V2.2_COMPLETE.bin","offset":"0x0","sha256":"c3e7a839e2fa7fa35e1826408dd49f0d43fa1a144f404a93b21fc831b21015ca"}]}]},
-    {"id":"ESP32_DIV_V2.1","name":"ESP32-DIV V2.1","chip":"ESP32-S3","visual":"handheld","description":"Equipo ESP32-DIV con pantalla y mandos; revisión 2.1.","note":"Las revisiones 2.0 y 2.1 pueden diferir en periféricos. Elige la correcta.","releases":[{"version":"MK SIGNAL v1.78 · DIV V2.1","eraseAll":true,"parts":[{"path":"firmware/ESP32_DIV_V2.1/ESP32-DIV-1.7.2-stable-by_MK_SIGNAL_v1.81-DIV-V2.1-full.bin","offset":"0x0","sha256":"64c1989fccdb0a0256512e83e0430d82954e71b5562147e8d1727d3d946778d4"}]}]},
-    {"id":"ESP32_DIV_2.0","name":"ESP32-DIV 2.0","chip":"ESP32-S3","visual":"handheld","description":"Equipo ESP32-DIV con pantalla y mandos; revisión 2.0.","note":"Las revisiones 2.0 y 2.1 pueden diferir en periféricos. Elige la correcta.","releases":[]},
-    {"id":"NRFBOX_V3","name":"nRFBOX V3","chip":"ESP32","visual":"box","description":"Dispositivo nRFBOX de tercera generación.","note":"Comprueba que la unidad sea nRFBOX V3 con chip ESP32 y flash de 4 MB.","releases":[{"version":"MK SIGNAL V1.71 Stable","eraseAll":true,"parts":[{"path":"firmware/NRFBOX_V3/MK_SIGNAL_nRFBOX_V3_V1.71_full.bin","offset":"0x0","sha256":"b9e57e9ea958f1edca9a52c7434fa09052e895c32d8376f6789ca35867a295a3"}]}]},
-    {"id":"MARAUDER_V8","name":"Marauder V8","chip":"ESP32-C5","visual":"handheld","description":"Marauder de formato completo, generación V8.","note":"El firmware V8 requiere el mapa Flash de 8 MB adecuado a la placa.","releases":[{"version":"MK SIGNAL v2 · V8 · 6bcca6f","eraseAll":true,"parts":[{"path":"firmware/MARAUDER_V8/ESP32Marauder_MK_SIGNAL_v2_for_V8-6bcca6f_factory.bin","offset":"0x0","sha256":"3511b74c7a5af6d5d1521af8f33f9c0909f4c7f8889257d7a441dde01b7714eb"}]}]},
-    {"id":"MARAUDER_MINI_V3","name":"Marauder Mini V3","chip":"ESP32-C5","visual":"mini","description":"Marauder compacto, generación Mini V3.","note":"No intercambies binarios con Marauder V8 aunque compartan chip.","releases":[{"version":"MK SIGNAL v2 · Mini V3 · 4b59659","eraseAll":true,"parts":[{"path":"firmware/MARAUDER_MINI_V3/ESP32Marauder_MK_SIGNAL_v2_for_Mini_V3-4b59659_factory.bin","offset":"0x0","sha256":"a137b2bc17b4711c93099cbc6d86f5d123f49e8e23eb080d43e378669838a563"}]}]}
+    {
+      "id": "RF-CLOWN_V2",
+      "name": "RF-CLOWN V2",
+      "chip": "ESP32",
+      "visual": "board",
+      "description": "Placa de radio con pantalla y antenas externas.",
+      "note": "Comprueba que la revisión de la PCB coincide con el firmware.",
+      "releases": [
+        {
+          "version": "MK SIGNAL V2.2 Stable",
+          "eraseAll": true,
+          "parts": [
+            {
+              "path": "firmware/RF-CLOWN_V2/MK_SIGNAL_RF_CLOWN_V2.2_COMPLETE.bin",
+              "offset": "0x0",
+              "sha256": "c3e7a839e2fa7fa35e1826408dd49f0d43fa1a144f404a93b21fc831b21015ca"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ESP32_DIV_V2.1",
+      "name": "ESP32-DIV V2.1",
+      "chip": "ESP32-S3",
+      "visual": "handheld",
+      "description": "Equipo ESP32-DIV con pantalla y mandos; revisión 2.1.",
+      "note": "Las revisiones 2.0 y 2.1 pueden diferir en periféricos. Elige la correcta.",
+      "releases": [
+        {
+          "version": "MK SIGNAL v1.8.1 · DIV V2.1",
+          "eraseAll": true,
+          "parts": [
+            {
+              "path": "firmware/ESP32_DIV_V2.1/ESP32-DIV-1.7.2-stable-by_MK_SIGNAL_v1.81-DIV-V2.1-full.bin",
+              "offset": "0x0",
+              "sha256": "64c1989fccdb0a0256512e83e0430d82954e71b5562147e8d1727d3d946778d4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ESP32_DIV_2.0",
+      "name": "ESP32-DIV 2.0",
+      "chip": "ESP32-S3",
+      "visual": "handheld",
+      "description": "Equipo ESP32-DIV con pantalla y mandos; revisión 2.0.",
+      "note": "Las revisiones 2.0 y 2.1 pueden diferir en periféricos. Elige la correcta.",
+      "releases": [
+        {
+          "version": "MK SIGNAL · DIV V2",
+          "eraseAll": true,
+          "parts": [
+            {
+              "path": "firmware/ESP32_DIV_V2/ESP32-DIV-1.7.2-stable-by_MK_SIGNAL-DIV-V2-full.bin",
+              "offset": "0x0",
+              "sha256": "1a30ef2acc6dbf9a2ea4e98dac821e0343b5939406ae6ca3470146f17574d36d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "NRFBOX_V3",
+      "name": "nRFBOX V3",
+      "chip": "ESP32",
+      "visual": "box",
+      "description": "Dispositivo nRFBOX de tercera generación.",
+      "note": "Comprueba que la unidad sea nRFBOX V3 con chip ESP32 y flash de 4 MB.",
+      "releases": [
+        {
+          "version": "MK SIGNAL V1.71 Stable",
+          "eraseAll": true,
+          "parts": [
+            {
+              "path": "firmware/NRFBOX_V3/MK_SIGNAL_nRFBOX_V3_V1.71_full.bin",
+              "offset": "0x0",
+              "sha256": "b9e57e9ea958f1edca9a52c7434fa09052e895c32d8376f6789ca35867a295a3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MARAUDER_V8",
+      "name": "Marauder V8",
+      "chip": "ESP32-C5",
+      "visual": "handheld",
+      "description": "Marauder de formato completo, generación V8.",
+      "note": "El firmware V8 requiere el mapa Flash de 8 MB adecuado a la placa.",
+      "releases": [
+        {
+          "version": "MK SIGNAL v2 · V8 · 6bcca6f",
+          "eraseAll": true,
+          "parts": [
+            {
+              "path": "firmware/MARAUDER_V8/ESP32Marauder_MK_SIGNAL_v2_for_V8-6bcca6f_factory.bin",
+              "offset": "0x0",
+              "sha256": "3511b74c7a5af6d5d1521af8f33f9c0909f4c7f8889257d7a441dde01b7714eb"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MARAUDER_MINI_V3",
+      "name": "Marauder Mini V3",
+      "chip": "ESP32-C5",
+      "visual": "mini",
+      "description": "Marauder compacto, generación Mini V3.",
+      "note": "No intercambies binarios con Marauder V8 aunque compartan chip.",
+      "releases": [
+        {
+          "version": "MK SIGNAL v2 · Mini V3 · 4b59659",
+          "eraseAll": true,
+          "parts": [
+            {
+              "path": "firmware/MARAUDER_MINI_V3/ESP32Marauder_MK_SIGNAL_v2_for_Mini_V3-4b59659_factory.bin",
+              "offset": "0x0",
+              "sha256": "a137b2bc17b4711c93099cbc6d86f5d123f49e8e23eb080d43e378669838a563"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }
