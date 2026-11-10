@@ -17,7 +17,7 @@ class Handler(SimpleHTTPRequestHandler):
         # Serve only public site assets. Private editor and source files are not routes.
         path = unquote(urlsplit(self.path).path)
         allowed = {'/', '/index.html', '/devices.json'}
-        assets = {'app.js', 'config.js', 'md5.js', 'i18n.js', 'models.js', 'station.css', 'mark.svg', 'king-card.svg', 'vendor/esptool/bundle.js', 'vendor/esptool/LICENSE', 'vendor/three/three.module.js', 'vendor/three/three.core.js', 'vendor/three/LICENSE'}
+        assets = {'app.js', 'ameba.js', 'config.js', 'md5.js', 'i18n.js', 'models.js', 'station.css', 'mark.svg', 'king-card.svg', 'devices/bw16.jpg', 'vendor/esptool/bundle.js', 'vendor/esptool/LICENSE', 'vendor/three/three.module.js', 'vendor/three/three.core.js', 'vendor/three/LICENSE'}
         public_asset = path.startswith('/assets/') and path[len('/assets/'):] in assets
         firmware = path.startswith('/firmware/') and path.lower().endswith('.bin') and not any(part in {'.', '..'} for part in path.split('/')) and '\\' not in path
         if path not in allowed and not public_asset and not firmware:

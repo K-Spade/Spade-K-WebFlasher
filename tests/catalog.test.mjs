@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateConfig, checkRanges, checkMergedFactoryImage, baudRateNumber} from '../assets/config.js';
+import {validateConfig, checkRanges, checkMergedFactoryImage, baudRateNumber, supportsBrowserFlashing, downloadFileName} from '../assets/config.js';
 import {md5} from '../assets/md5.js';
 
 const base = () => ({schemaVersion:2, devices:[{id:'BOARD_V1',name:'Board V1',chip:'ESP32',visual:'board',releases:[]}]});
@@ -46,4 +46,49 @@ test('factory image must include bootloader, matching app, and partition table',
 test('custom baud rate accepts supported bounds and rejects invalid values', () => {
   for (const rate of [9600, 115200, 230400, 460800, 921600, 250000]) assert.equal(baudRateNumber(String(rate)), rate);
   for (const rate of ['', ' ', 'abc', '1e5', '0x10000', 9599, 921601, -1, 115200.5, Infinity, null, true]) assert.throws(() => baudRateNumber(rate), /Invalid baud rate/);
+});
+
+test('BW16 is catalogued for downloads and cannot use the ESP32 driver', () => {
+  const config=base();config.devices=[{id:'BW16',name:'BW16',chip:'RTL8720DN',visual:'board',downloadOnly:true,releases:[]}];
+  assert.equal(validateConfig(config).devices[0].id,'BW16');
+  assert.equal(supportsBrowserFlashing(config.devices[0]),false);
+  assert.equal(supportsBrowserFlashing(base().devices[0]),true);
+  assert.equal(supportsBrowserFlashing({chip:'UNKNOWN'}),false);
+  config.devices[0].downloadOnly=false;
+  assert.throws(()=>validateConfig(config),/downloadOnly/);
+});
+
+test('download-only releases omit write addresses and erase flags', () => {
+  const config=base();config.devices=[{id:'BW16',name:'BW16',chip:'RTL8720DN',visual:'board',downloadOnly:true,releases:[{version:'1.0',parts:[{path:'firmware/BW16/sub/km0_km4_image2.bin',filename:'BW16-v1.0-km0_km4_image2.bin',sha256:'b'.repeat(64)}]}]}];
+  assert.doesNotThrow(()=>validateConfig(config));
+  assert.equal(downloadFileName(config.devices[0].releases[0].parts[0]),'BW16-v1.0-km0_km4_image2.bin');
+  assert.equal(downloadFileName({path:'firmware/BW16/plain.bin'}),'plain.bin');
+  config.devices[0].releases[0].parts[0].offset='0x0';
+  assert.throws(()=>validateConfig(config),/dirección de escritura/);
+  delete config.devices[0].releases[0].parts[0].offset;
+  config.devices[0].releases[0].eraseAll=true;
+  assert.throws(()=>validateConfig(config),/borrar la memoria/);
+});
+
+test('download file names cannot escape their names or directories', () => {
+  const config=base();config.devices=[{id:'BW16',name:'BW16',chip:'RTL8720DN',visual:'board',downloadOnly:true,releases:[{version:'1.0',parts:[{path:'firmware/BW16/a.bin',filename:'../a.bin',sha256:'c'.repeat(64)}]}]}];
+  assert.throws(()=>validateConfig(config),/nombre de descarga/);
+  config.devices[0].releases[0].parts[0].filename='name with space.bin';
+  assert.throws(()=>validateConfig(config),/nombre de descarga/);
+  config.devices[0].releases[0].parts[0].filename='ok-name.bin';
+  assert.doesNotThrow(()=>validateConfig(config));
+});
+
+test('ameba devices require a loader and flash by offset', () => {
+  const config=base();config.devices=[{id:'BW16',name:'BW16',chip:'RTL8720DN',visual:'board',flashProtocol:'ameba',ameba:{flashloader:{path:'firmware/BW16/_common/loader.bin',sha256:'a'.repeat(64),address:'0x82000'}},releases:[{version:'1.0',parts:[{path:'firmware/BW16/app.bin',offset:'0x6000',sha256:'b'.repeat(64)}]}]}];
+  assert.doesNotThrow(()=>validateConfig(config));
+  assert.equal(supportsBrowserFlashing(config.devices[0]),true);
+  config.devices[0].ameba.flashloader.address='0x123';
+  assert.throws(()=>validateConfig(config),/dirección/);
+  config.devices[0].ameba.flashloader.address='0x82000';
+  config.devices[0].releases[0].eraseAll=true;
+  assert.throws(()=>validateConfig(config),/eraseAll/);
+  config.devices[0].releases[0].eraseAll=false;
+  config.devices[0].ameba.flashloader.path='firmware/OTHER/loader.bin';
+  assert.throws(()=>validateConfig(config),/cargador Ameba/);
 });

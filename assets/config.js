@@ -1,5 +1,11 @@
 export const MAX_FIRMWARE_BYTES = 32 * 1024 * 1024;
-export const CHIPS = ['ESP32', 'ESP32-S2', 'ESP32-S3', 'ESP32-C2', 'ESP32-C3', 'ESP32-C5', 'ESP32-C6', 'ESP32-H2'];
+export const CHIPS = ['ESP32', 'ESP32-S2', 'ESP32-S3', 'ESP32-C2', 'ESP32-C3', 'ESP32-C5', 'ESP32-C6', 'ESP32-H2', 'RTL8720DN'];
+
+export function supportsBrowserFlashing(device) {
+  if (!device || device.downloadOnly === true) return false;
+  if (device.flashProtocol === 'ameba') return device.chip === 'RTL8720DN';
+  return CHIPS.includes(device.chip) && device.chip !== 'RTL8720DN';
+}
 
 export function baudRateNumber(value) {
   if (typeof value !== 'number' && (typeof value !== 'string' || !/^\d+$/.test(value.trim()))) throw new Error('Invalid baud rate');
@@ -16,8 +22,17 @@ export function offsetNumber(value) {
   return n;
 }
 
+export function downloadFileName(part) {
+  return part?.filename || String(part?.path || '').split('/').pop();
+}
+
 export function escapeHTML(value) {
   return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
+}
+
+function validBinPath(path, deviceId) {
+  const base = `firmware/${deviceId}/`;
+  return typeof path === 'string' && path.startsWith(base) && /^[A-Za-z0-9_./-]+\.bin$/.test(path) && !path.split('/').includes('..');
 }
 
 export function validateConfig(config) {
@@ -27,18 +42,33 @@ export function validateConfig(config) {
     if (!/^[A-Z0-9][A-Z0-9_.-]{0,63}$/.test(d.id) || ids.has(d.id)) throw new Error('ID de dispositivo duplicado o inválido.');
     ids.add(d.id);
     if (typeof d.name !== 'string' || !d.name || !CHIPS.includes(d.chip) || !['board','handheld','mini','box'].includes(d.visual)) throw new Error(`${d.id}: datos de hardware inválidos.`);
+    if (d.downloadOnly !== undefined && typeof d.downloadOnly !== 'boolean') throw new Error(d.id + ': downloadOnly debe ser booleano.');
+    if (d.flashProtocol !== undefined && d.flashProtocol !== 'ameba') throw new Error(d.id + ': flashProtocol no admitido.');
+    if (d.downloadOnly === true && d.flashProtocol !== undefined) throw new Error(d.id + ': downloadOnly y flashProtocol son incompatibles.');
+    if (d.chip === 'RTL8720DN' && d.downloadOnly !== true && d.flashProtocol !== 'ameba') throw new Error(d.id + ': RTL8720DN requiere downloadOnly o flashProtocol ameba.');
+    if (d.flashProtocol === 'ameba') {
+      const flashloader = d.ameba?.flashloader;
+      if (!flashloader || !validBinPath(flashloader.path, d.id) || !/^[a-f0-9]{64}$/i.test(flashloader.sha256 || '')) throw new Error(`${d.id}: cargador Ameba inválido.`);
+      offsetNumber(flashloader.address);
+    }
     if (!Array.isArray(d.releases)) throw new Error(`${d.id}: faltan las versiones.`);
     for (const r of d.releases) {
       if (!r.version || !Array.isArray(r.parts) || !r.parts.length) throw new Error(`${d.id}: versión sin binarios.`);
       if (r.eraseAll !== undefined && typeof r.eraseAll !== 'boolean') throw new Error(`${d.id}: eraseAll debe ser booleano.`);
+      if (d.downloadOnly && r.eraseAll === true) throw new Error(`${d.id}: una descarga no puede borrar la memoria.`);
+      if (d.flashProtocol === 'ameba' && r.eraseAll === true) throw new Error(`${d.id}: ameba no admite eraseAll.`);
       const addresses = new Set();
       for (const p of r.parts) {
-        const base = `firmware/${d.id}/`;
-        if (typeof p.path !== 'string' || !p.path.startsWith(base) || !/^[A-Za-z0-9_./-]+\.bin$/.test(p.path) || p.path.split('/').includes('..')) throw new Error(`${d.id}: ruta de firmware inválida.`);
+        if (!validBinPath(p.path, d.id)) throw new Error(`${d.id}: ruta de firmware inválida.`);
+        if (p.filename !== undefined && (typeof p.filename !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.bin$/.test(p.filename) || p.filename.includes('..'))) throw new Error(`${d.id}: nombre de descarga inválido.`);
+        if (!/^[a-f0-9]{64}$/i.test(p.sha256 || '')) throw new Error(`${d.id}: falta SHA-256 del binario.`);
+        if (d.downloadOnly) {
+          if (p.offset !== undefined) throw new Error(`${d.id}: una descarga no admite dirección de escritura.`);
+          continue;
+        }
         const address = offsetNumber(p.offset);
         if (addresses.has(address)) throw new Error(`${d.id}: dirección repetida.`);
         addresses.add(address);
-        if (!/^[a-f0-9]{64}$/i.test(p.sha256 || '')) throw new Error(`${d.id}: falta SHA-256 del binario.`);
       }
     }
   }

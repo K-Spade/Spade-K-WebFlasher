@@ -151,6 +151,68 @@
           ]
         }
       ]
+    },
+    {
+      "id": "BW16",
+      "name": "BW16",
+      "chip": "RTL8720DN",
+      "visual": "board",
+      "flashProtocol": "ameba",
+      "description": "Módulo BW16 con chip Realtek RTL8720DN.",
+      "note": "Modo de grabación: mantén BOOT/BURN, pulsa RST y suelta BOOT. La web escribe el cargador Ameba y las imágenes km0/km4/image2.",
+      "ameba": {
+        "flashloader": {
+          "path": "firmware/BW16/_common/imgtool_flashloader_amebad.bin",
+          "sha256": "9307121385cb390dfd2da64da2c6c515f17b5a9556b3d04021487c9b9f220b55",
+          "address": "0x82000"
+        }
+      },
+      "releases": [
+        {
+          "version": "BWifiKill v0.2",
+          "notes": "Incluye las imágenes de arranque km0/km4 y la imagen image2. No desconectes el USB durante la escritura.",
+          "parts": [
+            {
+              "path": "firmware/BW16/_common/km0_boot_all.bin",
+              "offset": "0x0",
+              "sha256": "453c880307fc389009aa8a39c63da3d715b207ad797206c896cc691426daaa64"
+            },
+            {
+              "path": "firmware/BW16/_common/km4_boot_all.bin",
+              "offset": "0x4000",
+              "sha256": "05fbf808d43113eaf7c11b75091c986b817135f0c52eb9fa94bb9fe9f34b062c"
+            },
+            {
+              "path": "firmware/BW16/BWifiKill-BW16/km0_km4_image2.bin",
+              "filename": "BWifiKill-BW16-v0.2-km0_km4_image2.bin",
+              "offset": "0x6000",
+              "sha256": "767752321d19fe307e023975310171adbd81ac6ec8c48f434f450f925ec2bb64"
+            }
+          ]
+        },
+        {
+          "version": "R4TKN Firmware v2.1",
+          "notes": "Incluye las imágenes de arranque km0/km4 y la imagen image2. No desconectes el USB durante la escritura.",
+          "parts": [
+            {
+              "path": "firmware/BW16/_common/km0_boot_all.bin",
+              "offset": "0x0",
+              "sha256": "453c880307fc389009aa8a39c63da3d715b207ad797206c896cc691426daaa64"
+            },
+            {
+              "path": "firmware/BW16/_common/km4_boot_all.bin",
+              "offset": "0x4000",
+              "sha256": "05fbf808d43113eaf7c11b75091c986b817135f0c52eb9fa94bb9fe9f34b062c"
+            },
+            {
+              "path": "firmware/BW16/R4TKN-FLASHER/km0_km4_image2.bin",
+              "filename": "R4TKN-Firmware-v2.1-km0_km4_image2.bin",
+              "offset": "0x6000",
+              "sha256": "f83013a29b4b175b8ac84e80b41a9fc21e8028b2f0787504f52a102e078e4f7e"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -245,6 +245,50 @@ function marauder(g,mini) {
   port(g,-h/2);
 }
 
+// Display-only interpretation of the owner's BW16 board photo.
+function bw16(g) {
+  const redPCB=mat(0x8c2632,{roughness:.73,metalness:.12});
+  const bluePCB=mat(0x17455b,{roughness:.67,metalness:.16});
+  const frame=mat(0xb7c7bd,{roughness:.5,metalness:.2});
+  const ribbon=mat(0xa67b28,{roughness:.56,metalness:.35});
+  roundedBox(g,2.35,2.85,.12,0,0,0,redPCB,.12);
+  roundedBox(g,2.27,2.77,.014,0,0,.07,redPCB,.1);
+  // Blue display PCB mounted above the red carrier.
+  roundedBox(g,1.75,2.68,.065,-.23,.025,.13,bluePCB,.07);
+  for(const x of [-1,.54])for(const y of [-1.18,1.23]){
+    faceDisc(g,.072,.016,x,y,.176,materials.metal);
+    faceDisc(g,.04,.018,x,y,.189,materials.recess);
+  }
+  // Pale screen surround and dark glass with the site's green display style.
+  roundedBox(g,1.69,2.31,.065,-.23,.06,.202,frame,.045);
+  screen(g,1.49,2.1,-.23,.06,.237,['BW16','RTL8720DN','SPADE K','FIRMWARE','READY']);
+  // Exposed orange ribbon and the display's bottom PCB marking.
+  box(g,.77,.17,.023,-.23,-1.123,.183,ribbon);
+  for(let i=0;i<10;i++)box(g,.012,.15,.007,-.57+i*.075,-1.123,.199,materials.gold);
+  label(g,'128 x 160 TFT',1.28,.11,-.23,-1.27,.175);
+  for(let i=0;i<8;i++){
+    faceDisc(g,.026,.018,-.73+i*.145,1.275,.176,materials.metal,12);
+    box(g,.045,.085,.021,-.73+i*.145,1.32,.132,materials.metal);
+  }
+  // Three round black push-buttons on square silver switch bodies.
+  for(const y of [.83,0,-.83]){
+    for(const dx of [-.11,.11])for(const dy of [-.16,.16])box(g,.052,.087,.018,.91+dx,y+dy,.095,materials.metal);
+    roundedBox(g,.35,.35,.05,.91,y,.135,materials.metal,.025);
+    for(const dx of [-.12,.12])for(const dy of [-.12,.12])faceDisc(g,.025,.012,.91+dx,y+dy,.17,materials.screw,12);
+    faceDisc(g,.103,.12,.91,y,.219,materials.black,24);
+    faceDisc(g,.092,.008,.91,y,.284,materials.button,24);
+    line(g,[[.77,y-.23,.083],[.71,y-.23,.083],[.71,y-.38,.083],[.79,y-.44,.083]],0xb26a56,.45);
+  }
+  // Small side switch and lower connector, as visible in the reference.
+  box(g,.15,.2,.12,-1.22,-.17,.018,materials.black);
+  for(let i=0;i<4;i++){
+    box(g,.055,.13,.028,.76+i*.1,-1.19,.09,materials.metal);
+    box(g,.042,.14,.06,-.18+i*.11,-1.44,.008,materials.metal);
+  }
+  roundedBox(g,.75,.85,.06,0,0,-.104,materials.edge,.03);
+  label(g,'BW16',.65,.18,0,.08,-.143,true);
+}
+
 export function createViewer(stage,host) {
   let renderer;
   try { renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'low-power'}); }
@@ -274,6 +318,7 @@ export function createViewer(stage,host) {
     else if(id==='NRF24_JAMMER')nrf24Jammer(model);
     else if(id==='MARAUDER_V8')marauder(model,false);
     else if(id==='MARAUDER_MINI_V3')marauder(model,true);
+    else if(id==='BW16')bw16(model);
     else {plate(model,1.45,2.65,.14);label(model,'SPADE K',1,.22,0,0,.11);}
     rx=-.16;ry=-.32;
     if(matchMedia('(prefers-reduced-motion: reduce)').matches){model.scale.setScalar(1);render();return;}
