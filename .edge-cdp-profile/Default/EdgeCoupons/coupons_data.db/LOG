@@ -1,0 +1,5 @@
+2026/11/10-12:04:27.672 78c Creating DB G:\K\Spade-K-WebFlasher\.edge-cdp-profile\Default\EdgeCoupons/coupons_data.db since it was missing.
+2026/11/10-12:04:27.675 78c Reusing MANIFEST G:\K\Spade-K-WebFlasher\.edge-cdp-profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/11/10-12:04:37.215 32c4 Level-0 table #5: started
+2026/11/10-12:04:37.217 32c4 Level-0 table #5: 683284 bytes OK
+2026/11/10-12:04:37.218 32c4 Delete type=0 #3

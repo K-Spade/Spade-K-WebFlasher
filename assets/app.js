@@ -69,7 +69,7 @@ function renderDevices(){
 }
 function renderDeviceDetails(){
   const device=state.device;
-  const driverKey=device?.flashProtocol==='ameba'?'driverBw16':['ESP32_DIV_2.0','ESP32_DIV_V2.1','RF-CLOWN_V2','NRFBOX_V3'].includes(device?.id)?'driverCp2102':device?.chip==='ESP32-C5'?'driverCh340':null;
+  const driverKey=device?.flashProtocol==='ameba'?'driverBw16':['ESP32_DIV_2.0','ESP32_DIV_V2.1','RF-CLOWN_V2','NRFBOX_V3','NRF24_JAMMER'].includes(device?.id)?'driverCp2102':device?.chip==='ESP32-C5'?'driverCh340':null;
   $('driverNotice').hidden=!driverKey;$('driverMessage').textContent=driverKey?t(driverKey):'';
 
 }
