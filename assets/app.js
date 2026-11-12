@@ -69,7 +69,7 @@ function renderDevices(){
 }
 function renderDeviceDetails(){
   const device=state.device;
-  const driverKey=device?.flashProtocol==='ameba'?'driverBw16':['ESP32_DIV_2.0','ESP32_DIV_V2.1','RF-CLOWN_V2','NRFBOX_V3','NRF24_JAMMER'].includes(device?.id)?'driverCp2102':device?.chip==='ESP32-C5'?'driverCh340':null;
+  const driverKey=device?.flashProtocol==='ameba'?'driverBw16':['ESP32_DIV_2.0','ESP32_DIV_V2.1','RF-CLOWN_V2','NRFBOX_V3','NRF24_JAMMER','TAMAFI'].includes(device?.id)?'driverCp2102':device?.chip==='ESP32-C5'?'driverCh340':null;
   $('driverNotice').hidden=!driverKey;$('driverMessage').textContent=driverKey?t(driverKey):'';
 
 }
@@ -175,6 +175,7 @@ async function flash(){
   if(state.device?.flashProtocol==='ameba')return flashAmebaDevice();
   $('flashTerminal').hidden=false;$('log').replaceChildren();state.busy=true;updateControls();
   const abort=new AbortController(),timer=setTimeout(()=>abort.abort(new Error('Download timeout')),120000);
+  let verifying=false;
   try{
     const baudrate=selectedBaudRate();
     const selected=release();if(!selected)throw new Error(t('noRelease'));log(t('flashStart',{device:state.device.name,version:selected.version}));setProgress(0,'progressDownload');
@@ -184,7 +185,7 @@ async function flash(){
     const total=parts.reduce((sum,p)=>sum+p.bytes.length,0),sizes=parts.map(p=>p.bytes.length);log(t('writingLog',{count:parts.length,kb:(total/1024).toFixed(1)}));
     if(selected.eraseAll){setProgress(0,'progressErasing');log(t('erasingLog'),'warn');}
     await state.loader.writeFlash({fileArray:parts.map(p=>({data:p.bytes,address:p.address})),flashSize:'keep',flashMode:'keep',flashFreq:'keep',eraseAll:selected.eraseAll===true,compress:true,
-      reportProgress:(index,written,length)=>{const previous=sizes.slice(0,index).reduce((a,b)=>a+b,0);setProgress(Math.min(99,(previous+sizes[index]*Math.min(1,written/length))/total*99),'progressWriting',{index:index+1,total:parts.length});},calculateMD5Hash:image=>md5(image)});
+      reportProgress:(index,written,length)=>{if(!verifying&&index===parts.length-1&&written>=length){verifying=true;setProgress(99,'progressVerifying');log(t('verifyingLog'),'warn');return;}const previous=sizes.slice(0,index).reduce((a,b)=>a+b,0);setProgress(Math.min(99,(previous+sizes[index]*Math.min(1,written/length))/total*99),'progressWriting',{index:index+1,total:parts.length});},calculateMD5Hash:image=>md5(image)});
     setProgress(100,'progressComplete');log(t('flashComplete'),'success');try{await state.loader.after('hard_reset');log(t('resetSent'));}catch{log(t('resetManual'),'warn');}toast(t('flashed'));
   }catch(error){setProgress(0,'progressStopped');showError(error);}finally{clearTimeout(timer);await disconnect();state.busy=false;$('confirmFlash').checked=false;updateControls();}
 }

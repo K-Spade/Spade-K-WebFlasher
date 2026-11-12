@@ -289,6 +289,38 @@ function bw16(g) {
   label(g,'BW16',.65,.18,0,.08,-.143,true);
 }
 
+// Display-only interpretation of the owner's TamaFi board photo.
+function tamafi(g) {
+  const rim=mat(0x31463a,{metalness:.38,roughness:.42});
+  const led=mat(0x9dff8a,{emissive:0x35a12c,emissiveIntensity:.9});
+  const ribbon=mat(0x2f8f58,{transparent:true,opacity:.65,roughness:.4});
+  // Round PCB with a subtle metal rim and a slightly lighter front face.
+  faceDisc(g,1.4,.18,0,0,0,rim,64);
+  faceDisc(g,1.36,.17,0,0,.005,materials.pcb,64);
+  faceDisc(g,1.33,.012,0,0,.094,materials.face,64);
+  // Small certification tab above the board.
+  roundedBox(g,.72,.4,.13,0,1.31,.045,materials.pcb,.05);
+  roundedBox(g,.66,.34,.012,0,1.31,.114,materials.face,.045);
+  for(let i=0;i<4;i++)box(g,.075,.055,.006,-.21+i*.14,1.34,.123,materials.metal);
+  label(g,'HF',.12,.055,-.27,1.23,.126);
+  // Central TFT with the same green UI language as the other models.
+  screen(g,1.18,1.14,0,.08,.096,['TamaFi','CIFERTECH','V2 GTR','ESP32-S3','READY']);
+  // Green display ribbon at the right edge of the screen.
+  box(g,.17,.3,.016,.64,.2,.096,ribbon);
+  // Six side buttons, three on each side.
+  for(const x of [-1.02,1.02])for(const y of [.62,0,-.62])button(g,x,y,.096,.115);
+  // Four status LEDs above the screen.
+  for(const x of [-.51,-.17,.17,.51]){
+    faceDisc(g,.062,.014,x,1.04,.098,led,18);
+    faceDisc(g,.028,.016,x,1.04,.108,materials.recess,18);
+  }
+  label(g,'TamaFi',.54,.11,.74,.86,.098);
+  label(g,'CiferTech',.5,.075,.74,.76,.098);
+  label(g,'TX   RX   CHG   STU',.92,.06,0,-1.23,.098);
+  port(g,-1.4);
+  label(g,'TamaFi V2 GTR',.9,.12,0,.05,-.095,true);
+}
+
 export function createViewer(stage,host) {
   let renderer;
   try { renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'low-power'}); }
@@ -319,6 +351,7 @@ export function createViewer(stage,host) {
     else if(id==='MARAUDER_V8')marauder(model,false);
     else if(id==='MARAUDER_MINI_V3')marauder(model,true);
     else if(id==='BW16')bw16(model);
+    else if(id==='TAMAFI')tamafi(model);
     else {plate(model,1.45,2.65,.14);label(model,'SPADE K',1,.22,0,0,.11);}
     rx=-.16;ry=-.32;
     if(matchMedia('(prefers-reduced-motion: reduce)').matches){model.scale.setScalar(1);render();return;}

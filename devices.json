@@ -153,6 +153,27 @@
       ]
     },
     {
+      "id": "TAMAFI",
+      "name": "TamaFi",
+      "chip": "ESP32-S3",
+      "visual": "handheld",
+      "description": "Placa redonda TamaFi con pantalla y seis botones; ESP32-S3.",
+      "note": "Comprueba que la revisión sea TamaFi V2 GTR Edition antes de flashear.",
+      "releases": [
+        {
+          "version": "TamaFi V2 GTR Edition · V1.0.0",
+          "eraseAll": true,
+          "parts": [
+            {
+              "path": "firmware/TAMAFI/TamaFi-V2-GTR-Edition-V1.0.0.bin",
+              "offset": "0x0",
+              "sha256": "4796cd3bdb3410f112628a7389c17910bae96a26133fab35420f96a802cce529"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "BW16",
       "name": "BW16",
       "chip": "RTL8720DN",

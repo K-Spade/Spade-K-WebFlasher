@@ -1,10 +1,10 @@
 # Spade K WebFlasher
 
-WebFlasher estático para ocho modelos Spade K. El navegador descarga el firmware desde este mismo sitio, comprueba su SHA-256 y, tras la autorización del usuario, flashea únicamente el puerto serie local con Web Serial. La interfaz está en español, inglés y chino simplificado. Los modelos 3D son ilustraciones, no réplicas para identificar la revisión de hardware.
+WebFlasher estático para nueve modelos Spade K. El navegador descarga el firmware desde este mismo sitio, comprueba su SHA-256 y, tras la autorización del usuario, flashea únicamente el puerto serie local con Web Serial. La interfaz está en español, inglés y chino simplificado. Los modelos 3D son ilustraciones, no réplicas para identificar la revisión de hardware.
 
 ## Estado de la entrega
 
-Hay siete imágenes completas de fábrica para ESP32 y dos firmwares BW16. Las siete de ESP32 se escriben en `0x0` y borran la memoria flash y los ajustes. No sustituyas el firmware de ESP32-DIV 2.0 por el de V2.1. Los BW16 se escriben por Web Serial con el protocolo Ameba: el cargador se carga en RAM y después se graban las imágenes km0 (`0x08000000`), km4 (`0x08004000`) e image2 (`0x08006000`). El catálogo, las direcciones, los nombres de descarga y los hashes están en `devices.json`; cada carpeta de `firmware/` documenta su versión.
+Hay ocho imágenes completas de fábrica para ESP32 (siete modelos ESP32 clásico y TamaFi con ESP32-S3) y dos firmwares BW16. Las ocho de ESP32 se escriben en `0x0` y borran la memoria flash y los ajustes. No sustituyas el firmware de ESP32-DIV 2.0 por el de V2.1. Los BW16 se escriben por Web Serial con el protocolo Ameba: el cargador se carga en RAM y después se graban las imágenes km0 (`0x08000000`), km4 (`0x08004000`) e image2 (`0x08006000`). El catálogo, las direcciones, los nombres de descarga y los hashes están en `devices.json`; cada carpeta de `firmware/` documenta su versión.
 
 | Dispositivo | Firmware disponible |
 | --- | --- |
@@ -15,6 +15,7 @@ Hay siete imágenes completas de fábrica para ESP32 y dos firmwares BW16. Las s
 | Marauder V8 | MK SIGNAL v2, `6bcca6f` |
 | Marauder Mini V3 | MK SIGNAL v2, `4b59659` |
 | NRF24_JAMMER (ESP32 DEV) | NRF-Jammer V1.0 |
+| TamaFi (ESP32-S3) | TamaFi V2 GTR Edition · V1.0.0 |
 | BW16 (RTL8720DN) | BWifiKill v0.2 y R4TKN Firmware v2.1 (Web Serial, Ameba) |
 
 La validación automatizada comprueba la existencia de cada archivo, su SHA-256, la estructura de las imágenes de fábrica, el cargador Ameba y que no haya binarios sin registrar. **Falta una prueba de flasheo con placas físicas**; debe hacerse con cada revisión antes de ofrecer el sitio a usuarios finales. El flasheo de BW16 usa un cargador y unas imágenes de arranque comunes: pruébalo en un BW16 real antes de publicar.
